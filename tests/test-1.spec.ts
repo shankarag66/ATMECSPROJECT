@@ -1,0 +1,36 @@
+import { test, expect } from '@playwright/test';
+
+test('test', async ({ page }) => {
+  await page.goto('https://www.saucedemo.com/v1/index.html');
+  await page.locator('body').click();
+  // await page.locator('[data-test="username"]').click();
+  await page.locator('[data-test="username"]').fill('standard_user');
+  // await page.locator('[data-test="password"]').click();
+  await page.locator('[data-test="password"]').fill('secret_sauce');
+  await page.getByRole('button', { name: 'LOGIN' }).dblclick();
+  await expect(page.locator('#header_container div').nth(1)).toBeVisible();
+  await expect(page.locator('.inventory_item').first()).toBeVisible();
+  await expect(page.locator('div').filter({ hasText: /^\$29\.99ADD TO CART$/ }).getByRole('button')).toBeVisible();
+  await page.locator('div').filter({ hasText: /^\$29\.99ADD TO CART$/ }).getByRole('button').click();
+  await expect(page.getByRole('button', { name: 'REMOVE' })).toBeVisible();
+  await expect(page.getByRole('link', { name: '1' })).toBeVisible();
+  await page.getByRole('link', { name: '1' }).click();
+  await expect(page.getByText('QTY')).toBeVisible();
+  await expect(page.locator('#cart_contents_container').getByText('1')).toBeVisible();
+  await expect(page.getByText('DESCRIPTION')).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Sauce Labs Backpack' })).toBeVisible();
+  await expect(page.getByRole('button', { name: 'REMOVE' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'Continue Shopping' })).toBeVisible();
+  await expect(page.getByRole('link', { name: 'CHECKOUT' })).toBeVisible();
+  await page.getByRole('link', { name: 'CHECKOUT' }).click();
+  // await page.locator('[data-test="firstName"]').click();
+  await page.locator('[data-test="firstName"]').fill('Will');
+  // await page.locator('[data-test="lastName"]').click();
+  await page.locator('[data-test="lastName"]').fill('Bon');
+  // await page.locator('[data-test="postalCode"]').click();
+  await page.locator('[data-test="postalCode"]').fill('560037');
+  await page.getByRole('button', { name: 'CONTINUE' }).click();
+  await page.getByRole('link', { name: 'FINISH' }).click();
+  await expect(page.getByRole('heading', { name: 'THANK YOU FOR YOUR ORDER' })).toBeVisible();
+  await expect(page.getByText('Your order has been')).toBeVisible();
+});
